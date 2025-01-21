@@ -21,12 +21,16 @@ class DrawingMachine:
             random_index = random.randint(0, len(self.people) - 1)
             picked = self.people[random_index]
             if picked == person:
+                if len(self.already_picked) == len(self.people) - 1 and person not in self.already_picked:
+                    return None
+                continue
+            elif picked in self.already_picked:
                 continue
             elif person in self.relationshMap and self.relationshMap[person] == picked:
                 if len(self.already_picked) == len(self.people) - 1:
                     return None
-                continue
-            elif picked in self.already_picked:
+                elif len(self.already_picked) == len(self.people) - 2 and person not in self.already_picked:
+                    return None
                 continue
             break
         self.already_picked.add(picked)
@@ -47,13 +51,14 @@ class DrawingMachine:
                 drawed_person = self.draw_name(person)
                 if drawed_person == None:
                     restart = True
+                    break
                 answer.append([person, drawed_person])
             if restart: continue
             else: break
         
         return answer
         
-game = DrawingMachine(["P", "C", "D", "A"], [["P", "A"]])
+game = DrawingMachine(["P", "C", "D", "A", "E", "G", "RR"], [["P", "A"], ["E", "C"], ["RR", "G"]])
 
 assignments = game.draw_all()
 print(assignments)
