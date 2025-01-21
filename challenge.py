@@ -23,6 +23,8 @@ class DrawingMachine:
             if picked == person:
                 continue
             elif person in self.relationshMap and self.relationshMap[person] == picked:
+                if len(self.already_picked) == len(self.people) - 1:
+                    return None
                 continue
             elif picked in self.already_picked:
                 continue
@@ -33,14 +35,25 @@ class DrawingMachine:
     def draw_all(self):
         ## answer : [["Person1", "Person2"]]
         answer = []
+        restart = False
        
-        for person in self.people:
-            drawed_person = self.draw_name(person)
-            answer.append([person, drawed_person])
+        ## Need to take care of edge case where last person is stuck with an
+        ## invalid person. In that case restart
+        while True:
+            self.already_picked = set()
+            answer = []
+            restart = False
+            for person in self.people:
+                drawed_person = self.draw_name(person)
+                if drawed_person == None:
+                    restart = True
+                answer.append([person, drawed_person])
+            if restart: continue
+            else: break
         
         return answer
         
-game = DrawingMachine(["P", "C", "A", "D"], [["P", "A"]])
+game = DrawingMachine(["P", "C", "D", "A"], [["P", "A"]])
 
 assignments = game.draw_all()
 print(assignments)
